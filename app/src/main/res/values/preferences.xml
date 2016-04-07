@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--Keys-->
+    <string name="pref_location_key" translatable="false">pref_location_key</string>
+
+    <!--Text-->
+    <string name="pref_location_title">Location</string>
+
+    <!--Default-->
+    <string name="pref_location_default" translatable="false">""</string>
+
+</resources>

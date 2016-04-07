@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="com.testapp.weather.util.binding.ClickAction"/>
+
+        <import type="com.testapp.weather.util.ForecastUtils"/>
+
+        <variable
+            name="forecast"
+            type="com.testapp.weather.model.ForecastItem"/>
+
+        <variable
+            name="onActionClickListener"
+            type="com.testapp.weather.util.binding.OnActionClickListener"/>
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        android:foreground="?attr/selectableItemBackground"
+        android:onClick="@{onActionClickListener}"
+        android:orientation="horizontal"
+        app:backgroundColorResId="@{ForecastUtils.getWeatherCondition(forecast.weatherId).getColorResId}"
+        app:action="@{ClickAction.SHOW_DETAIL}"
+        app:model="@{forecast}"
+        tools:background="@color/colorWeatherClear"
+        >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="8dp"
+            >
+
+
+            <ImageView
+                android:id="@+id/ivIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:maxWidth="60dp"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:layout_marginLeft="8dp"
+                android:setImageResource="@{ForecastUtils.getWeatherCondition(forecast.weatherId).getIconResId}"
+                tools:src="@drawable/ic_weather_clear"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
+                android:textColor="@android:color/white"
+                android:text='@{@string/format_temp_short(forecast.maxTemp)}'
+                android:gravity="center"
+                android:textSize="36sp"
+                android:ems="3"
+                tools:text="@string/format_temp_short"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:background="#2A000000"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                app:relativeDate="@{forecast.dateTime}"
+                tools:text="25.12.2015"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text='@{@string/format_temp(forecast.maxTemp)}'
+                android:textSize="14sp"
+                tools:text="@string/format_temp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text='@{@string/format_pressure(forecast.pressure)}'
+                android:textSize="14sp"
+                tools:text="@string/format_pressure"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</layout>
