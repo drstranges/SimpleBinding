@@ -5,6 +5,7 @@ import android.databinding.BindingConversion;
 import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.ColorRes;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewParent;
@@ -73,6 +74,11 @@ public class Converters {
         } else {
             view.setBackgroundColor(color);
         }
+    }
+
+    @BindingAdapter(value = {"transitionName"})
+    public static void setTransitionName(final View view, final String transitionName) {
+        ViewCompat.setTransitionName(view, transitionName);
     }
 
 }

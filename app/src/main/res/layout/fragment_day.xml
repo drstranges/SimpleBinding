@@ -35,6 +35,7 @@
                 android:adjustViewBounds="true"
                 android:padding="4dp"
                 android:scaleType="fitCenter"
+                app:transitionName='@{"transition_" + viewModel.bForecast.dt}'
                 android:setImageResource="@{ForecastUtils.getWeatherCondition(viewModel.bForecast.weather).getIconResId}"
                 tools:src="@drawable/ic_weather_clear"
                 />

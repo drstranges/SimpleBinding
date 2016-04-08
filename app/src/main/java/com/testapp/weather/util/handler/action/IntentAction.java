@@ -21,7 +21,7 @@ public abstract class IntentAction<M> extends BaseAction<M> {
         final Intent intent = getIntent(view, context, actionType, model);
         if (intent == null) return;
         if (Build.VERSION.SDK_INT >= 21) {
-            ActivityOptionsCompat activityOptions = prepareTransition(intent, view);
+            ActivityOptionsCompat activityOptions = prepareTransition(intent, view, model);
             if (activityOptions != null) {
                 context.startActivity(intent, activityOptions.toBundle());
                 return;
@@ -34,7 +34,7 @@ public abstract class IntentAction<M> extends BaseAction<M> {
     protected abstract @Nullable
     Intent getIntent(View view, Context context, String actionType, M model);
 
-    protected ActivityOptionsCompat prepareTransition(Intent intent, View view) {
+    protected ActivityOptionsCompat prepareTransition(Intent intent, View view, M model) {
         return null;
     }
 }
