@@ -7,6 +7,7 @@ import android.support.v4.content.ContextCompat;
 
 import com.testapp.weather.model.ForecastItem;
 import com.testapp.weather.network.RestClient;
+import com.testapp.weather.storage.DataStorage;
 import com.testapp.weather.util.ForecastUtils;
 import com.testapp.weather.util.PrefUtils;
 
@@ -76,6 +77,7 @@ public class DayViewModel extends BaseViewModel {
 
     private void setForecast(ForecastItem forecast) {
         bForecast.set(forecast);
+        DataStorage.storeCurrentWeather(ForecastUtils.getWeatherCondition(forecast.weather));
     }
 
     private void refreshStatus() {

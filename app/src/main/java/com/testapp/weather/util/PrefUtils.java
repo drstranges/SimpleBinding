@@ -15,7 +15,7 @@ public final class PrefUtils {
     private static SharedPreferences sPreferences;
 
     public static void setPreferredLocation(Context _context, String _location) {
-        final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(_context);
+        final SharedPreferences pref = getDefaultSharedPreferences(_context);
         pref.edit().putString(_context.getString(R.string.pref_location_key), _location).apply();
     }
 
