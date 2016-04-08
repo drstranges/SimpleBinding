@@ -11,7 +11,7 @@ import static com.testapp.weather.util.ForecastUtils.WeatherCondition.RAIN;
  */
 public final class DataStorage {
 
-    public static ObservableField<WeatherCondition> currentCondition = new ObservableField<>(RAIN);
+    public static ObservableField<WeatherCondition> currentCondition = new ObservableField<>();
 
     public static void storeCurrentWeather(WeatherCondition weatherCondition) {
         currentCondition.set(weatherCondition);

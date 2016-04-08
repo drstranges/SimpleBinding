@@ -18,4 +18,5 @@
     <string name="logout">Logout</string>
     <string name="sync">Sync</string>
     <string name="location">Location</string>
+    <string name="unknown_location">Unknown location</string>
 </resources>

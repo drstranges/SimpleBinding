@@ -9,6 +9,7 @@ import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 
 import com.testapp.weather.R;
+import com.testapp.weather.util.PrefUtils;
 import com.testapp.weather.view.ColorToolbarHolder;
 
 /**
@@ -44,6 +45,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
             }
         } else {
             preference.setSummary(stringValue);
+            PrefUtils.onPreferenceChange(preference, value);
         }
         return true;
     }
