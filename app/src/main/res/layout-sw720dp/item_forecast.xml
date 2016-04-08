@@ -5,7 +5,7 @@
 
     <data>
 
-        <import type="com.testapp.weather.util.binding.ClickAction"/>
+        <import type="com.testapp.weather.util.handler.ActionType"/>
 
         <import type="com.testapp.weather.util.ForecastUtils"/>
 
@@ -14,8 +14,8 @@
             type="com.testapp.weather.model.ForecastItem"/>
 
         <variable
-            name="onActionClickListener"
-            type="com.testapp.weather.util.binding.OnActionClickListener"/>
+            name="actionHandler"
+            type="com.testapp.weather.util.handler.ActionClickListener"/>
     </data>
 
     <LinearLayout
@@ -23,10 +23,11 @@
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true"
         android:foreground="?attr/selectableItemBackground"
-        android:onClick="@{onActionClickListener}"
+
         android:orientation="horizontal"
-        app:backgroundColorResId="@{ForecastUtils.getWeatherCondition(forecast.weatherId).getColorResId}"
-        app:action="@{ClickAction.SHOW_DETAIL}"
+        app:actionHandler="@{actionHandler}"
+        app:actionType="@{ActionType.OPEN}"
+        app:backgroundColorResId="@{ForecastUtils.getWeatherCondition(forecast.weather).getColorResId}"
         app:model="@{forecast}"
         tools:background="@color/colorWeatherClear"
         >
@@ -44,11 +45,11 @@
                 android:id="@+id/ivIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_marginLeft="8dp"
+                android:adjustViewBounds="true"
                 android:maxWidth="60dp"
                 android:scaleType="fitCenter"
-                android:adjustViewBounds="true"
-                android:layout_marginLeft="8dp"
-                android:setImageResource="@{ForecastUtils.getWeatherCondition(forecast.weatherId).getIconResId}"
+                android:setImageResource="@{ForecastUtils.getWeatherCondition(forecast.weather).getIconResId}"
                 tools:src="@drawable/ic_weather_clear"
                 />
 
@@ -56,14 +57,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:singleLine="true"
+                android:ems="3"
+                android:gravity="center"
                 android:paddingLeft="4dp"
                 android:paddingRight="4dp"
+                android:singleLine="true"
+                android:text='@{@string/format_temp_short(forecast.temp.day)}'
                 android:textColor="@android:color/white"
-                android:text='@{@string/format_temp_short(forecast.maxTemp)}'
-                android:gravity="center"
                 android:textSize="36sp"
-                android:ems="3"
                 tools:text="@string/format_temp_short"/>
 
         </LinearLayout>
@@ -81,9 +82,9 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:singleLine="true"
+                android:text="@{ForecastUtils.getRelativeDate(context, forecast.dt)}"
                 android:textColor="@android:color/white"
                 android:textSize="20sp"
-                app:relativeDate="@{forecast.dateTime}"
                 tools:text="25.12.2015"/>
 
             <TextView
@@ -91,7 +92,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:singleLine="true"
-                android:text='@{@string/format_temp(forecast.maxTemp)}'
+                android:text='@{@string/format_temp(forecast.temp.max)}'
                 android:textSize="14sp"
                 tools:text="@string/format_temp"/>
 

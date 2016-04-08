@@ -13,35 +13,22 @@ import com.testapp.weather.util.PrefUtils;
 /**
  * Created on 25.12.2015.
  */
-public class MainViewModel implements ViewModel, SharedPreferences.OnSharedPreferenceChangeListener {
+public class MainViewModel extends BaseViewModel {
+
     private static final int REQUEST_CODE_PERMISSIONS = 1;
 
-    private Context mContext;
     private Callback mCallback;
 
-    public interface Callback {
-        void requestPermissions(int _requestCode, String[] _requiredPermissions);
 
-        void onError(Exception _e);
-
-        void onSyncStarted();
-
-        void onSyncFinished();
-    }
-
-    public MainViewModel(Context _context, Callback _callback) {
-        mContext = _context.getApplicationContext();
-        mCallback = _callback != null ? _callback : new EmptyCallback();
-        PreferenceManager.getDefaultSharedPreferences(_context)
-                .registerOnSharedPreferenceChangeListener(this);
+    public MainViewModel(Context context, Callback callback) {
+        super(context);
+        mCallback = callback != null ? callback : Callback.EMPTY_CALLBACK;
 
     }
 
     @Override
     public void onDestroy() {
-        PreferenceManager.getDefaultSharedPreferences(mContext)
-                .unregisterOnSharedPreferenceChangeListener(this);
-        mContext = null;
+        super.onDestroy();
         mCallback = null;
     }
 
@@ -49,23 +36,16 @@ public class MainViewModel implements ViewModel, SharedPreferences.OnSharedPrefe
         String location = PrefUtils.getPreferredLocation(mContext);
         if (TextUtils.isEmpty(location)) {
             findLocation();
-            return;
         }
     }
 
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (mContext.getString(R.string.pref_location_key).equals(key)) {
-            performSync();
-        }
-    }
 
     private void findLocation() {
         try {
             LocationLoader.launch(mContext);
-        } catch (PermissionHelper.PermissionSecurityException _e) {
-            _e.printStackTrace();
-            mCallback.requestPermissions(REQUEST_CODE_PERMISSIONS, _e.getRequiredPermissions());
+        } catch (PermissionHelper.PermissionSecurityException e) {
+            e.printStackTrace();
+            mCallback.requestPermissions(REQUEST_CODE_PERMISSIONS, e.getRequiredPermissions());
         }
     }
 
@@ -81,36 +61,17 @@ public class MainViewModel implements ViewModel, SharedPreferences.OnSharedPrefe
     }
 
 
-    @Override
-    public void onSyncStarted() {
-        mCallback.onSyncStarted();
-    }
+    public interface Callback {
+        void requestPermissions(int _requestCode, String[] _requiredPermissions);
+        void showError(String message);
 
-    @Override
-    public void onSyncFinished() {
-        mCallback.onSyncFinished();
-    }
+        Callback EMPTY_CALLBACK = new Callback() {
+            @Override
+            public void showError(String message) {}
 
-    @Override
-    public void onSyncError(int _errorCode, String _message) {
-        mCallback.onError(new Exception(_message));
-    }
+            @Override
+            public void requestPermissions(int _requestCode, String[] _requiredPermissions) {}
 
-    private static class EmptyCallback implements Callback {
-        @Override
-        public void requestPermissions(int _requestCode, String[] _requiredPermissions) {
-        }
-
-        @Override
-        public void onError(Exception _e) {
-        }
-
-        @Override
-        public void onSyncStarted() {
-        }
-
-        @Override
-        public void onSyncFinished() {
-        }
+        };
     }
 }

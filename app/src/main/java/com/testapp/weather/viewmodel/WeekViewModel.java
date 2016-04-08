@@ -1,141 +1,123 @@
 package com.testapp.weather.viewmodel;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.databinding.ObservableBoolean;
-import android.net.Uri;
-import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
-import android.view.View;
 
-import com.testapp.weather.adapter.BindableAdapter;
+import com.testapp.weather.action.OpenDayWeatherAction;
 import com.testapp.weather.adapter.ForecastAdapter;
 import com.testapp.weather.adapter.util.ListConfig;
-import com.testapp.weather.db.DatabaseHelper;
-import com.testapp.weather.db.table.ForecastTable;
+import com.testapp.weather.model.Forecast;
 import com.testapp.weather.model.ForecastItem;
-import com.testapp.weather.model.Model;
-import com.testapp.weather.sync.StatusReceiver;
-import com.testapp.weather.sync.util.SyncManager;
-import com.testapp.weather.util.ObservedCursorLoader;
-import com.testapp.weather.util.binding.BindableBoolean;
-import com.testapp.weather.util.binding.ClickAction;
-import com.testapp.weather.util.binding.OnActionClickListener;
+import com.testapp.weather.network.RestClient;
+import com.testapp.weather.util.PrefUtils;
+import com.testapp.weather.util.handler.ActionClickListener;
+import com.testapp.weather.util.handler.ActionHandler;
+import com.testapp.weather.util.handler.ActionType;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created on 25.12.2015.
  */
-public class WeekViewModel implements ViewModel, OnActionClickListener, LoaderManager.LoaderCallbacks<Cursor> {
+public class WeekViewModel extends BaseViewModel {
 
-    private static final int LOADER_ID_FORECAST = 2;
-    public static final int FORECAST_DAY_COUNT = 7;
+    public static final int FORECAST_DAY_COUNT = 16;
 
-    private Context mContext;
     private Callback mCallback;
     public ListConfig listConfig;
     public ForecastAdapter mAdapter;
     public ObservableBoolean isEmptyMessageVisible = new ObservableBoolean(false);
-//    public ObservableBoolean isProgressVisible = new ObservableBoolean(false);
-    public BindableBoolean isRefreshing = new BindableBoolean();
-    private final List<ForecastItem> mLoadedModels;
+    public ObservableBoolean isLoading = new ObservableBoolean();
 
-    public interface Callback {
+    private final List<ForecastItem> mItems;
+    private Subscription mSubscription;
 
-        void onForecastClicked(View _view, ForecastItem _forecast);
+    public WeekViewModel(Context context, Callback callback) {
+        super(context);
+        mCallback = callback != null ? callback : Callback.EMPTY_CALLBACK;
+        mItems = new ArrayList<>(7);
+        mAdapter = new ForecastAdapter(mItems, createActionHandler());
+        listConfig = getListConfig();
+        loadData();
     }
 
-    public WeekViewModel(Context _context, LoaderManager _loaderManager, Callback _callback) {
-        mContext = _context.getApplicationContext();
-        mCallback = _callback != null ? _callback : new EmptyCallback();
-//        mScrollListener = new EndlessOnScrollListener(this);
-        mLoadedModels = new ArrayList<>(7);
-        mAdapter = new ForecastAdapter(mLoadedModels, this);
-        listConfig = getListConfig();
-        _loaderManager.initLoader(LOADER_ID_FORECAST, null, this);
+    private ActionClickListener createActionHandler() {
+        return new ActionHandler.Builder()
+                .addAction(ActionType.OPEN, new OpenDayWeatherAction())
+                .build();
     }
 
     protected ListConfig getListConfig() {
         ListConfig.Builder builder = new ListConfig.Builder(mAdapter)
                 .setHasFixedSize(true)
-//                .addOnScrollListener(mScrollListener)
                 .setDefaultDividerEnabled(true);
         return builder.build(mContext);
     }
 
     @Override
     public void onDestroy() {
-        isRefreshing.set(false);
-        mContext = null;
+        super.onDestroy();
+        unsubscribe(mSubscription);
+        isLoading.set(false);
         mCallback = null;
     }
 
     public void onRefresh() {
-        isRefreshing.set(false);
+        loadData();
     }
 
-    @Override
-    public void onSyncStarted() {
-        isRefreshing.set(true);
+    private void loadData(){
+        unsubscribe(mSubscription);
+        isLoading.set(true);
+        final String location = PrefUtils.getPreferredLocation(mContext);
+        mSubscription = RestClient.getApi()
+                .getDailyForecast(location, FORECAST_DAY_COUNT)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Forecast>() {
+                    @Override
+                    public void onCompleted() {
+                        isLoading.set(false);
+                        mAdapter.notifyDataSetChanged();
+                        refreshStatus();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        isLoading.set(false);
+                        mCallback.showError(e.getMessage());
+                    }
+
+                    @Override
+                    public void onNext(Forecast forecast) {
+                        mItems.clear();
+                        mItems.addAll(forecast.list);
+                    }
+                });
     }
 
-    @Override
-    public void onSyncFinished() {
-        isRefreshing.set(false);
-    }
-
-    @Override
-    public void onSyncError(int _errorCode, String _message) {
-        isRefreshing.set(false);
-    }
-
-    @Override
-    public void onActionFired(View _view, ClickAction _action, Model _model) {
-        mCallback.onForecastClicked(_view, (ForecastItem) _model);
-    }
-
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String sortOrder = ForecastTable.FIELD_DATE_TIME + " ASC";
-        final Uri uri = ForecastTable.buildUriWithStartDate(new Date(), 0, FORECAST_DAY_COUNT);
-        return new ObservedCursorLoader(mContext,
-                uri,
-                null,
-                null,
-                null,
-                sortOrder);
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> _loader, Cursor _data) {
-        final List<ForecastItem> forecast = DatabaseHelper.getInstance(mContext)
-                .convertCursorToList(_data, ForecastItem.class, false);
-        mLoadedModels.clear();
-        mLoadedModels.addAll(forecast);
-        mAdapter.notifyDataSetChanged();
-        refreshStatus();
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> _loader) {
-        refreshStatus();
-    }
 
     private void refreshStatus() {
-        isEmptyMessageVisible.set(mLoadedModels.isEmpty());
+        isEmptyMessageVisible.set(mItems.isEmpty());
     }
 
 
-    private static class EmptyCallback implements Callback {
+    public interface Callback {
 
-        @Override
-        public void onForecastClicked(View _view, ForecastItem _forecast) {
+        void showError(String message);
 
-        }
+        Callback EMPTY_CALLBACK = new Callback() {
+
+            @Override
+            public void showError(String message) {
+
+            }
+        };
     }
 }

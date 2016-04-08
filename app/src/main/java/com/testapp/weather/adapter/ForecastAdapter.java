@@ -1,7 +1,6 @@
 package com.testapp.weather.adapter;
 
 import android.databinding.DataBindingUtil;
-import android.databinding.ViewDataBinding;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -10,7 +9,7 @@ import com.testapp.weather.R;
 import com.testapp.weather.adapter.util.BindingHolder;
 import com.testapp.weather.databinding.ItemForecastBinding;
 import com.testapp.weather.model.ForecastItem;
-import com.testapp.weather.util.binding.OnActionClickListener;
+import com.testapp.weather.util.handler.ActionClickListener;
 
 import java.util.List;
 
@@ -20,9 +19,9 @@ import java.util.List;
 public final class ForecastAdapter extends RecyclerView.Adapter<BindingHolder> {
 
     protected List<ForecastItem> mDataSource;
-    private final OnActionClickListener mActionClickListener;
+    private final ActionClickListener mActionClickListener;
 
-    public ForecastAdapter(final List<ForecastItem> _dataSource, OnActionClickListener _clickListener) {
+    public ForecastAdapter(final List<ForecastItem> _dataSource, ActionClickListener _clickListener) {
         mDataSource = _dataSource;
         mActionClickListener = _clickListener;
     }
@@ -31,7 +30,7 @@ public final class ForecastAdapter extends RecyclerView.Adapter<BindingHolder> {
     public BindingHolder onCreateViewHolder(ViewGroup _parent, int _viewType) {
         final ItemForecastBinding binding = DataBindingUtil.inflate(LayoutInflater.from(_parent.getContext()),
                 R.layout.item_forecast, _parent, false);
-        binding.setOnActionClickListener(mActionClickListener);
+        binding.setActionHandler(mActionClickListener);
         return new BindingHolder<>(binding);
     }
 
@@ -46,7 +45,7 @@ public final class ForecastAdapter extends RecyclerView.Adapter<BindingHolder> {
 
     @Override
     public long getItemId(int position) {
-        return mDataSource.get(position).id;
+        return mDataSource.get(position).dt;
     }
 
     @Override

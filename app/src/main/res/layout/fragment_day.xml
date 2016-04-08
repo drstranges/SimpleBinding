@@ -15,7 +15,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:backgroundColorResId="@{ForecastUtils.getWeatherCondition(viewModel.forecast.weatherId).getColorResId}">
+        app:backgroundColorResId="@{ForecastUtils.getWeatherCondition(viewModel.bForecast.weather).getColorResId}">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -35,7 +35,7 @@
                 android:adjustViewBounds="true"
                 android:padding="4dp"
                 android:scaleType="fitCenter"
-                android:setImageResource="@{ForecastUtils.getWeatherCondition(viewModel.forecast.weatherId).getIconResId}"
+                android:setImageResource="@{ForecastUtils.getWeatherCondition(viewModel.bForecast.weather).getIconResId}"
                 tools:src="@drawable/ic_weather_clear"
                 />
 
@@ -45,8 +45,7 @@
                 android:layout_marginBottom="32dp"
                 android:gravity="center_horizontal"
                 android:textSize="48sp"
-                app:maxTemp='@{viewModel.forecast.maxTemp}'
-                app:minTemp='@{viewModel.forecast.minTemp}'
+                android:text='@{ForecastUtils.getMaxMinTemp(context, viewModel.bForecast.temp)}'
                 tools:text="+3\u00B0-1\u00B0"/>
 
             <View style="@style/divider_horizontal"/>
@@ -57,7 +56,7 @@
                 android:layout_marginBottom="8dp"
                 android:layout_marginLeft="72dp"
                 android:layout_marginTop="8dp"
-                android:text='@{@string/format_pressure(viewModel.forecast.pressure)}'
+                android:text='@{@string/format_pressure(viewModel.bForecast.pressure)}'
                 android:textSize="18sp"
                 tools:text="@string/format_pressure"/>
 
@@ -69,7 +68,7 @@
                 android:layout_marginBottom="8dp"
                 android:layout_marginLeft="72dp"
                 android:layout_marginTop="8dp"
-                android:text='@{@string/format_humidity(viewModel.forecast.humidity)}'
+                android:text='@{@string/format_humidity(viewModel.bForecast.humidity)}'
                 android:textSize="18sp"
                 tools:text="@string/format_humidity"/>
 
@@ -82,7 +81,7 @@
                 android:layout_marginBottom="8dp"
                 android:layout_marginLeft="72dp"
                 android:layout_marginTop="8dp"
-                android:text='@{@string/format_wind(viewModel.forecast.windSpeed, ForecastUtils.getWindDirection(viewModel.forecast.windDirection))}'
+                android:text='@{@string/format_wind(viewModel.bForecast.speed, ForecastUtils.getWindDirection(viewModel.bForecast.deg))}'
                 android:textSize="18sp"
                 tools:text="@string/format_wind"/>
 

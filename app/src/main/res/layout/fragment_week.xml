@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:setColorSchemeColors="@{@intArray/refresh_progress_colors}"
             android:setOnRefreshListener="@{viewModel.onRefresh}"
-            app:isRefreshing="@{viewModel.isRefreshing}">
+            android:setRefreshing="@{viewModel.isLoading}">
 
             <android.support.v7.widget.RecyclerView
                 android:layout_width="match_parent"

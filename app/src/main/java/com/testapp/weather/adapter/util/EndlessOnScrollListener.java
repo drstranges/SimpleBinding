@@ -3,23 +3,37 @@ package com.testapp.weather.adapter.util;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 
 /**
  * Use this class to provide "load on demand" functionality for RecyclerView
- * Created by romka on 25.12.15.
+ * Created by romka on 18.01.2016.
  */
 public class EndlessOnScrollListener extends RecyclerView.OnScrollListener {
     public static String TAG = "EndlessOnScrollListener";
+
+    private static final int DEFAULT_VISIBLE_THRESOLD = 5;
     private final OnLoadMoreListener mMoreListener;
 
-    private int visibleThreshold = 5; // The minimum amount of items to have below your current scroll position before loading more.
+    private int visibleThreshold; // The minimum amount of items to have below your current scroll position before loading more.
     int firstVisibleItem, visibleItemCount, totalItemCount;
 
-    private LinearLayoutManager mLayoutManager;
+    private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView mRecyclerView;
 
-    public EndlessOnScrollListener(@NonNull OnLoadMoreListener _listener) {
-        mMoreListener = _listener;
+    public interface OnLoadMoreListener {
+        void onLoadMore();
+        boolean isLoading();
+    }
+
+
+    public EndlessOnScrollListener(@NonNull OnLoadMoreListener listener) {
+        this(listener, DEFAULT_VISIBLE_THRESOLD);
+    }
+
+    public EndlessOnScrollListener(@NonNull OnLoadMoreListener listener, int visibleThreshold) {
+        mMoreListener = listener;
+        this.visibleThreshold = visibleThreshold;
     }
 
     public void setRecyclerView(final RecyclerView _recyclerView) {
@@ -38,7 +52,7 @@ public class EndlessOnScrollListener extends RecyclerView.OnScrollListener {
 
         visibleItemCount = recyclerView.getChildCount();
         totalItemCount = mLayoutManager.getItemCount();
-        firstVisibleItem = mLayoutManager.findFirstVisibleItemPosition();
+        firstVisibleItem = getFirstVisibleItemPosition();
 
         if (!mMoreListener.isLoading()
                 && (totalItemCount - visibleItemCount) <= (firstVisibleItem + visibleThreshold)) {
@@ -49,10 +63,19 @@ public class EndlessOnScrollListener extends RecyclerView.OnScrollListener {
         }
     }
 
+    private int getFirstVisibleItemPosition() {
+        int pos = 0;
+        if (mLayoutManager instanceof LinearLayoutManager) {
+            pos = ((LinearLayoutManager) mLayoutManager).findFirstVisibleItemPosition();
+        } else if (mLayoutManager instanceof StaggeredGridLayoutManager) {
+            pos = ((StaggeredGridLayoutManager) mLayoutManager).findFirstVisibleItemPositions(null)[0];
+        }
+        return pos;
+    }
+
     private void getLayoutManager(RecyclerView _recyclerView) {
-        if (mLayoutManager == null) {
-            final RecyclerView.LayoutManager lm = _recyclerView.getLayoutManager();
-            if (lm instanceof LinearLayoutManager) mLayoutManager = (LinearLayoutManager) lm;
+        if (mLayoutManager == null && _recyclerView != null) {
+            mLayoutManager = _recyclerView.getLayoutManager();
         }
     }
 }

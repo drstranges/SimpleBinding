@@ -3,11 +3,11 @@ package com.testapp.weather.model;
 
 public class Temp {
 
-    public Double day;
-    public Double min;
-    public Double max;
-    public Double night;
-    public Double eve;
-    public Double morn;
+    public Float day;
+    public Float min;
+    public Float max;
+    public Float night;
+    public Float eve;
+    public Float morn;
 
 }

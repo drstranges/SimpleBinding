@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.testapp.weather.R;
 import com.testapp.weather.databinding.FragmentWeekBinding;
@@ -29,7 +30,7 @@ public class WeekFragment extends BaseFragment<WeekViewModel, FragmentWeekBindin
 
     @Override
     protected WeekViewModel createViewModel() {
-        return new WeekViewModel(getContext(), getLoaderManager(), this);
+        return new WeekViewModel(getContext(), this);
     }
 
     @Override
@@ -40,21 +41,7 @@ public class WeekFragment extends BaseFragment<WeekViewModel, FragmentWeekBindin
     }
 
     @Override
-    public void onForecastClicked(View _view, ForecastItem _forecast) {
-        final Activity activity = getActivity();
-        if (activity instanceof Navigator){
-            int color = getResources().getColor(
-                    ForecastUtils.getWeatherCondition(_forecast.weatherId).getColorResId());
-            ((Navigator) activity)
-                    .navigateToScreen(DayFragment.class,
-                            DayFragment.buildArgs(_forecast.dateTime, color), true);
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        mBinding.unbind();
-        mViewModel.onDestroy();
-        super.onDestroy();
+    public void showError(String message) {
+        Toast.makeText(getContext().getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 }

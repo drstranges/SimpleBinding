@@ -12,9 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.testapp.weather.BR;
-import com.testapp.weather.databinding.FragmentDayBinding;
 import com.testapp.weather.view.ColorToolbarHolder;
-import com.testapp.weather.viewmodel.DayViewModel;
 import com.testapp.weather.viewmodel.ViewModel;
 
 /**

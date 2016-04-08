@@ -11,9 +11,6 @@ import android.location.LocationManager;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import com.testapp.weather.R;
-import com.testapp.weather.sync.StatusReceiver;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
@@ -48,7 +45,6 @@ public class LocationLoader extends AsyncTaskLoader<String> {
             }
         } catch (PermissionHelper.PermissionSecurityException _e) {
             _e.printStackTrace();
-            StatusReceiver.sendSyncError(getContext(), 0, getContext().getString(R.string.error_location_not_found));
         }
         return locationAddress;
     }

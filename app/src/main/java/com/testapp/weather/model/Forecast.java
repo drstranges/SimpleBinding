@@ -2,13 +2,11 @@
 package com.testapp.weather.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Forecast {
 
     public City city;
-    public String cod;
-    public Double message;
-    public Integer cnt;
-    public java.util.List<com.testapp.weather.model.List> list = new ArrayList<com.testapp.weather.model.List>();
+    public List<ForecastItem> list = new ArrayList<>();
 
 }

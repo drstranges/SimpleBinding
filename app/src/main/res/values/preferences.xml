@@ -5,7 +5,8 @@
     <string name="pref_location_key" translatable="false">pref_location_key</string>
 
     <!--Text-->
-    <string name="pref_location_title">Location</string>
+    <string name="pref_category_sync" translatable="false">@string/sync</string>
+    <string name="pref_location_title" translatable="false">@string/location</string>
 
     <!--Default-->
     <string name="pref_location_default" translatable="false">""</string>

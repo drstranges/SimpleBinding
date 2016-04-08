@@ -5,4 +5,5 @@
     <dimen name="divider_size_list">4dp</dimen>
     <dimen name="divide_size">1dp</dimen>
     <dimen name="divider_horizontal_margin">16dp</dimen>
+    <dimen name="default_list_divider_size">2dp</dimen>
 </resources>

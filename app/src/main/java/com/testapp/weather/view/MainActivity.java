@@ -21,9 +21,7 @@ import android.widget.Toast;
 import com.testapp.weather.R;
 import com.testapp.weather.databinding.ActivityMainBinding;
 import com.testapp.weather.util.LogHelper;
-import com.testapp.weather.util.PrefUtils;
 import com.testapp.weather.view.fragment.DayFragment;
-import com.testapp.weather.view.fragment.HistoryFragment;
 import com.testapp.weather.view.fragment.SettingsFragment;
 import com.testapp.weather.view.fragment.WeekFragment;
 import com.testapp.weather.viewmodel.MainViewModel;
@@ -34,12 +32,10 @@ public class MainActivity extends AppCompatActivity
         implements Navigator, ColorToolbarHolder, NavigationView.OnNavigationItemSelectedListener,
         MainViewModel.Callback, FragmentManager.OnBackStackChangedListener {
 
-    private static final java.lang.String LOG_TAG = LogHelper.makeLogTag(MainActivity.class);
+    private static final String LOG_TAG = LogHelper.makeLogTag(MainActivity.class);
 
-    private static final long BACK_PRESS_EXIT_DELAY = 10000; //10 sec
     private ActivityMainBinding mBinding;
     private ActionBarDrawerToggle mDrawerToggle;
-    private long mTimeLastBackPress;
     private MainViewModel mViewModel;
     private DrawerLayout mDrawerLayout;
 
@@ -92,9 +88,6 @@ public class MainActivity extends AppCompatActivity
             case R.id.menu_item_weather_week:
                 navigateToScreen(WeekFragment.class, null, false);
                 break;
-            case R.id.menu_item_weather_history:
-                navigateToScreen(HistoryFragment.class, null, false);
-                break;
             case R.id.menu_item_settings:
                 navigateToScreen(SettingsFragment.class, null, false);
                 break;
@@ -110,26 +103,12 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        if (isBackStackEmpty() && (closeOpenedDrawer() || !checkExitByBackPressed())) return;
+        if (isBackStackEmpty() && closeOpenedDrawer()) return;
         super.onBackPressed();
     }
 
     private boolean isBackStackEmpty() {
         return getSupportFragmentManager().getBackStackEntryCount() == 0;
-    }
-
-    private boolean checkExitByBackPressed() {
-        boolean isAllowed = true;
-        if (PrefUtils.isBackPressTwiceEnabled(getApplicationContext())) {
-            final long timeNow = System.currentTimeMillis();
-            final long backPressDelay = timeNow - mTimeLastBackPress;
-            mTimeLastBackPress = timeNow;
-            isAllowed = backPressDelay < BACK_PRESS_EXIT_DELAY;
-            if (!isAllowed) {
-                Toast.makeText(getApplicationContext(), R.string.press_back_twice, Toast.LENGTH_SHORT).show();
-            }
-        }
-        return isAllowed;
     }
 
     @Override
@@ -182,25 +161,14 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onError(Exception _e) {
-        Toast.makeText(getApplicationContext(), _e.getMessage(), Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onSyncStarted() {
-        Toast.makeText(getApplicationContext(), "Syncing...", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onSyncFinished() {
-        Toast.makeText(getApplicationContext(), "Weather syncing successfully!", Toast.LENGTH_SHORT).show();
-    }
-
-
-    @Override
     public void requestPermissions(int _requestCode, String[] _requiredPermissions) {
         LogHelper.LOGD(LOG_TAG, "Permissions requested: " + Arrays.toString(_requiredPermissions));
         ActivityCompat.requestPermissions(this, _requiredPermissions, _requestCode);
+    }
+
+    @Override
+    public void showError(String message) {
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override

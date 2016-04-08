@@ -8,11 +8,16 @@ import android.text.format.DateUtils;
 import android.text.style.RelativeSizeSpan;
 
 import com.testapp.weather.R;
+import com.testapp.weather.model.Temp;
+import com.testapp.weather.model.Weather;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+
+import static com.testapp.weather.util.ForecastUtils.WeatherCondition.*;
 
 /**
  * Helper class to simplify work with displaying weather
@@ -53,78 +58,84 @@ public class ForecastUtils {
     }
 
     // See http://openweathermap.org/weather-conditions
-    public static WeatherCondition getWeatherCondition(int _weatherId) {
+    public static WeatherCondition getWeatherCondition(List<Weather> weather) {
+        if (weather == null || weather.isEmpty()) return CLEAR;
+        final int weatherId = weather.get(0).id;
 
-        if (_weatherId >= 200 && _weatherId < 300) { //Thunderstorm
-            return WeatherCondition.THUNDERSTORM;
-        } else if (_weatherId >= 300 && _weatherId < 400) { //Drizzle
-            return WeatherCondition.DRIZZLE;
-        } else if (_weatherId >= 500 && _weatherId < 600) { //Rain
-            return WeatherCondition.RAIN;
-        } else if (_weatherId >= 600 && _weatherId < 700 || _weatherId == 903) { //Snow
-            return WeatherCondition.SNOW;
-        } else if (_weatherId >= 701 && _weatherId <= 761) { //Fog
-            return WeatherCondition.FOG;
-        } else if (_weatherId == 761 || _weatherId == 781
-                || (_weatherId >= 900 && _weatherId <= 902) || _weatherId == 905
-                || (_weatherId >= 956 && _weatherId <= 962)) { //storm
-            return WeatherCondition.STORM;
-        } else if (_weatherId == 800 || _weatherId == 904 || (_weatherId >= 951 && _weatherId <= 955)) { //Clear
-            return WeatherCondition.CLEAR;
-        } else if (_weatherId == 801) { //few clouds
-            return WeatherCondition.PARTLY_CLOUDS;
-        } else if (_weatherId >= 802 && _weatherId <= 804) { //Clouds
-            return WeatherCondition.CLOUDS;
-        } else if (_weatherId == 906) { //hail
-            return WeatherCondition.HAIL;
+        if (weatherId >= 200 && weatherId < 300) { //Thunderstorm
+            return THUNDERSTORM;
+        } else if (weatherId >= 300 && weatherId < 400) { //Drizzle
+            return DRIZZLE;
+        } else if (weatherId >= 500 && weatherId < 600) { //Rain
+            return RAIN;
+        } else if (weatherId >= 600 && weatherId < 700 || weatherId == 903) { //Snow
+            return SNOW;
+        } else if (weatherId >= 701 && weatherId <= 761) { //Fog
+            return FOG;
+        } else if (weatherId == 761 || weatherId == 781
+                || (weatherId >= 900 && weatherId <= 902) || weatherId == 905
+                || (weatherId >= 956 && weatherId <= 962)) { //storm
+            return STORM;
+        } else if (weatherId == 800 || weatherId == 904 || (weatherId >= 951 && weatherId <= 955)) { //Clear
+            return CLEAR;
+        } else if (weatherId == 801) { //few clouds
+            return PARTLY_CLOUDS;
+        } else if (weatherId >= 802 && weatherId <= 804) { //Clouds
+            return CLOUDS;
+        } else if (weatherId == 906) { //hail
+            return HAIL;
         }
-        return WeatherCondition.CLOUDS;
+        return CLEAR;
     }
 
-    public static String getWindDirection(double _windDirection) {
+    public static String getWindDirection(Integer windDirection) {
+        if (windDirection == null) return "";
         // From wind direction in degrees, determine compass direction as a string (e.g NW)
         String direction = "";
-        if (_windDirection >= 337.5 || _windDirection < 22.5) {
+        if (windDirection >= 337.5 || windDirection < 22.5) {
             direction = "N";
-        } else if (_windDirection >= 22.5 && _windDirection < 67.5) {
+        } else if (windDirection >= 22.5 && windDirection < 67.5) {
             direction = "NE";
-        } else if (_windDirection >= 67.5 && _windDirection < 112.5) {
+        } else if (windDirection >= 67.5 && windDirection < 112.5) {
             direction = "E";
-        } else if (_windDirection >= 112.5 && _windDirection < 157.5) {
+        } else if (windDirection >= 112.5 && windDirection < 157.5) {
             direction = "SE";
-        } else if (_windDirection >= 157.5 && _windDirection < 202.5) {
+        } else if (windDirection >= 157.5 && windDirection < 202.5) {
             direction = "S";
-        } else if (_windDirection >= 202.5 && _windDirection < 247.5) {
+        } else if (windDirection >= 202.5 && windDirection < 247.5) {
             direction = "SW";
-        } else if (_windDirection >= 247.5 && _windDirection < 292.5) {
+        } else if (windDirection >= 247.5 && windDirection < 292.5) {
             direction = "W";
-        } else if (_windDirection >= 292.5 || _windDirection < 337.5) {
+        } else if (windDirection >= 292.5 || windDirection < 337.5) {
             direction = "NW";
         }
         return direction;
     }
 
-    public static CharSequence getRelativeDate(Context _context, long _timeMillis) {
+    public static CharSequence getRelativeDate(Context _context, Long timeMillis) {
+        if (timeMillis == null) return "";
         final CharSequence relativeDate;
-        if (DateUtils.isToday(_timeMillis)) {
+        if (DateUtils.isToday(timeMillis)) {
             relativeDate = _context.getString(R.string.date_format_today,
-                    DATE_FORMAT_SHORT.format(new Date(_timeMillis)));
-        } else if (DateUtils.isToday(_timeMillis - MILLIS_IN_DAY)) {
+                    DATE_FORMAT_SHORT.format(new Date(timeMillis)));
+        } else if (DateUtils.isToday(timeMillis - MILLIS_IN_DAY)) {
             relativeDate = _context.getString(R.string.relative_date_tomorrow,
-                    DATE_FORMAT_SHORT.format(new Date(_timeMillis)));
+                    DATE_FORMAT_SHORT.format(new Date(timeMillis)));
         } else {
-            relativeDate = DATE_FORMAT.format(new Date(_timeMillis));
+            relativeDate = DATE_FORMAT.format(new Date(timeMillis));
         }
         return relativeDate;
     }
 
-    public static SpannableStringBuilder getMaxMinTemp(Context _context, double _maxTemp, double _minTemp) {
-        String maxTemp = _context.getString(R.string.format_temp_short, _maxTemp);
-        String minTemp = _context.getString(R.string.format_temp_short, _minTemp);
-
+    public static SpannableStringBuilder getMaxMinTemp(Context _context, Temp temp) {
         final SpannableStringBuilder sb = new SpannableStringBuilder();
-        sb.append(maxTemp).setSpan(new RelativeSizeSpan(2f), 0, maxTemp.length(),0);
-        sb.append(minTemp);
+        if (temp != null) {
+            String maxTemp = _context.getString(R.string.format_temp_short, temp.max);
+            String minTemp = _context.getString(R.string.format_temp_short, temp.min);
+
+            sb.append(maxTemp).setSpan(new RelativeSizeSpan(2f), 0, maxTemp.length(), 0);
+            sb.append(minTemp);
+        }
         return sb;
     }
 }
