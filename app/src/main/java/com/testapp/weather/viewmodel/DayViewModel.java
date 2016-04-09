@@ -45,6 +45,10 @@ public class DayViewModel extends BaseViewModel {
         mCallback = null;
     }
 
+    public void onRefresh() {
+        loadData();
+    }
+
     public void loadData() {
         unsubscribe(mSubscription);
         isLoading.set(true);

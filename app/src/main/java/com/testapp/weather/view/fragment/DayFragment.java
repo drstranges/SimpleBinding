@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
+import android.view.Window;
 import android.widget.Toast;
 
 import com.testapp.weather.R;
@@ -31,11 +32,11 @@ public class DayFragment extends BaseFragment<DayViewModel, FragmentDayBinding> 
 
     @Override
     protected void onInitArgs() {
-        getActivity().postponeEnterTransition();
         Bundle args = getArguments();
         if (args != null && args.containsKey(ARG_FORECAST)) {
             String item = args.getString(ARG_FORECAST);
             mItem = RestClient.getGson().fromJson(item, ForecastItem.class);
+            getActivity().postponeEnterTransition();
         }
     }
 
@@ -43,7 +44,7 @@ public class DayFragment extends BaseFragment<DayViewModel, FragmentDayBinding> 
     protected void onBindViewModel(FragmentDayBinding _binding, DayViewModel _viewModel) {
         super.onBindViewModel(_binding, _viewModel);
         _binding.executePendingBindings();
-        getActivity().startPostponedEnterTransition();
+        getActivity().supportStartPostponedEnterTransition();
     }
 
     @Override
