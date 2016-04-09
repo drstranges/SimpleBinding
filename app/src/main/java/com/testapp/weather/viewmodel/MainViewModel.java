@@ -33,6 +33,7 @@ public class MainViewModel extends BaseViewModel {
     }
 
     public void performSync() {
+        PrefUtils.init(mContext); // Can be called in Application instead
         String location = PrefUtils.getPreferredLocation(mContext);
         if (TextUtils.isEmpty(location)) {
             findLocation();

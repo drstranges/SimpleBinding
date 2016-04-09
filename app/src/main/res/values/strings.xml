@@ -19,4 +19,6 @@
     <string name="sync">Sync</string>
     <string name="location">Location</string>
     <string name="unknown_location">Unknown location</string>
+    <string name="unknown_nickname">Unknown</string>
+    <string name="menu_navigation_profile">Profile</string>
 </resources>

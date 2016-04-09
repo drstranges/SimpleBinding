@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.testapp.weather.viewmodel.ProfileViewModel" />
+    </data>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/activity_horizontal_margin"
+        android:background="@color/colorPrimary">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <com.testapp.weather.view.widget.CircularImageView
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center_horizontal"
+                app:border="true"
+                app:border_color="@android:color/white"
+                app:border_width="1dp"
+                app:glideSrc='@{"file:///android_asset/avatar.png"}'
+                app:glidePlaceholder="@{@drawable/ic_weather_clear}"
+                app:shadow="false"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="32dp"
+                android:gravity="center_horizontal"
+                android:text="@{viewModel.nickname}"
+                android:textSize="48sp"
+                tools:text="Nickname" />
+
+            <EditText
+                android:layout_marginTop="24dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:bidirectional="@{viewModel.nickname}" />
+
+
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+</layout>

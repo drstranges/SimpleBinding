@@ -17,6 +17,7 @@ public final class PrefUtils {
 
     private static SharedPreferences sPreferences;
     public static ObservableField<String> sLocation = new ObservableField<>();
+    public static ObservableField<String> sNickname = new ObservableField<>();
 
     public static void setPreferredLocation(Context context, String location) {
         sLocation.set(TextUtils.isEmpty(location) ? null : location);
@@ -33,6 +34,21 @@ public final class PrefUtils {
         return location;
     }
 
+
+    public static String getNickName(Context context) {
+        final SharedPreferences pref = getDefaultSharedPreferences(context);
+        String nickname = pref.getString("pref_nickname", null);
+        sNickname.set(nickname);
+        return nickname;
+    }
+
+
+    public static void setNickName(Context context, String nickname) {
+        sNickname.set(nickname);
+        final SharedPreferences pref = getDefaultSharedPreferences(context);
+        pref.edit().putString("pref_nickname", nickname).apply();
+    }
+
     protected static SharedPreferences getDefaultSharedPreferences(Context _context) {
         if (sPreferences == null) {
             sPreferences = PreferenceManager.getDefaultSharedPreferences(_context.getApplicationContext());
@@ -45,5 +61,10 @@ public final class PrefUtils {
         if (locationKey.equals(preference.getKey())) {
             sLocation.set(value.toString());
         }
+    }
+
+    public static void init(Context context) {
+        sLocation.set(getPreferredLocation(context));
+        sNickname.set(getNickName(context));
     }
 }

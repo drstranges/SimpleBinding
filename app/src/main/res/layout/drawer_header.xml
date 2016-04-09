@@ -5,6 +5,7 @@
     <data>
 
         <import type="com.testapp.weather.storage.DataStorage" />
+
         <import type="com.testapp.weather.util.PrefUtils" />
     </data>
 
@@ -27,13 +28,33 @@
             android:setImageResource="@{DataStorage.currentCondition.getIconResId}"
             tools:src="@drawable/ic_weather_rain" />
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/activity_horizontal_margin"
             android:layout_gravity="bottom"
-            android:textColor="@android:color/white"
-            android:text="@{PrefUtils.sLocation ?? @string/unknown_location}"
-            tools:text="Location" />
+            android:layout_margin="@dimen/activity_horizontal_margin"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:paddingRight="4dp"
+                android:ellipsize="end"
+                android:text="@{PrefUtils.sLocation ?? @string/unknown_location}"
+                android:textColor="@android:color/white"
+                tools:text="Location" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="bottom"
+                android:gravity="right"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:text="@{PrefUtils.sNickname ?? @string/unknown_nickname}"
+                android:textColor="@android:color/white"
+                tools:text="NickName" />
+        </LinearLayout>
     </FrameLayout>
 </layout>
