@@ -24,11 +24,9 @@
         android:setRefreshing="@{viewModel.isLoading}">
         <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        <FrameLayout
-            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:backgroundColorResId="@{ForecastUtils.getWeatherCondition(viewModel.bForecast.weather).getColorResId}">
+            app:backgroundColorResId="@{ForecastUtils.getWeatherCondition(viewModel.bForecast.weather).getColorResId}"
+            >
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -103,20 +101,19 @@
 
             </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_below="@id/toolbar"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:setVisibility="@{viewModel.isEmptyMessageVisible}"
-                android:text="@string/message_list_empty"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@android:color/white"
-                android:visibility="gone" />
-
-        </FrameLayout>
         </android.support.v4.widget.NestedScrollView>
     </android.support.v4.widget.SwipeRefreshLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_below="@id/toolbar"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:setVisibility="@{viewModel.isEmptyMessageVisible}"
+            android:text="@string/message_list_empty"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@android:color/white"
+            android:visibility="gone" />
     </FrameLayout>
 </layout>

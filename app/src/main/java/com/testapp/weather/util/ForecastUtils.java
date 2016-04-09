@@ -112,8 +112,10 @@ public class ForecastUtils {
         return direction;
     }
 
-    public static CharSequence getRelativeDate(Context _context, Long timeMillis) {
-        if (timeMillis == null) return "";
+    public static CharSequence getRelativeDate(Context _context, Long timeUnix) {
+
+        if (timeUnix == null) return "";
+        long timeMillis = timeUnix * 1000;
         final CharSequence relativeDate;
         if (DateUtils.isToday(timeMillis)) {
             relativeDate = _context.getString(R.string.date_format_today,

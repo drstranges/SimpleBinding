@@ -50,16 +50,16 @@ public class DayFragment extends BaseFragment<DayViewModel, FragmentDayBinding> 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        final Long timeMillis;
+        final Long timeUnix;
         if (mItem != null){
-            timeMillis = mItem.dt;
+            timeUnix = mItem.dt;
             int color = ContextCompat.getColor(getContext(),
                     ForecastUtils.getWeatherCondition(mItem.weather).getColorResId());
             setToolbarColor(color);
         } else {
-            timeMillis = System.currentTimeMillis();
+            timeUnix = System.currentTimeMillis()/1000;
         }
-        setTitle(ForecastUtils.getRelativeDate(getContext(), timeMillis));
+        setTitle(ForecastUtils.getRelativeDate(getContext(), timeUnix));
     }
 
     @Override
